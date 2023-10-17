@@ -12,7 +12,7 @@ node {
     }
     stage('Backend-Init') {
         // Initialize the Terraform configuration
-        dir('03_01_remotestate/remote_resources') {
+        dir('.') {
             sh script: '../../terraform init -input=false'
         }
         
@@ -21,7 +21,7 @@ node {
         // Create Terraform plan for backend resources
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-            dir('03_01_remotestate/remote_resources') {
+            dir('.') {
                 sh script: '../../terraform plan \
                         -out backend.tfplan \
                         -var="aws_access_key=$aws_access_key" \
@@ -40,7 +40,7 @@ node {
     stage('Config-Init') {
         withCredentials([string(credentialsId: 'AWS_ACCESS_KEY', variable: 'aws_access_key'), 
                         string(credentialsId: 'AWS_SECRET_KEY', variable: 'aws_secret_key')]) {
-                            dir('03_01_remotestate') {
+                            dir('.') {
                                 sh script: '../terraform init \
                                             -backend-config="bucket=red30-tfstate" \
                                             -backend-config="key=red30/ecommerceapp/app.state" \
