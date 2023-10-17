@@ -5,11 +5,20 @@ node {
         git 'https://github.com/BigDevopsTemy/terraform.git'   
     }
     stage('Download') {
-        // Download Terraform
-        sh label: '', script: 'curl https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip \
-            --output terraform_0.12.29_darwin_amd64.zip \
-             && unzip terraform_0.12.29_darwin_amd64.zip'
+    // Download Terraform for Linux
+        sh label: '', script: 'curl -LO https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip \
+            && unzip terraform_0.12.29_linux_amd64.zip'
+
+        // Make the binary executable
+        sh label: '', script: 'chmod +x terraform'
+
+        // Optional: Move it to a directory in your PATH
+        sh label: '', script: 'sudo mv terraform /usr/local/bin/'
+
+        // Clean up the downloaded zip file
+        sh label: '', script: 'rm terraform_0.12.29_linux_amd64.zip'
     }
+
     stage('Backend-Init') {
         // Initialize the Terraform configuration
         dir('.') {
